@@ -1,0 +1,18 @@
+#include<stdio.h>
+int superdigit(int n)
+{
+    return (n==0)?n:(n%10)+superdigit(n/10);
+}
+
+int main()
+{
+    int n;
+    printf("Enter an integer:");
+    scanf("%d",&n);
+    int res=superdigit(n);
+    while(res>=10)
+    {
+         res=superdigit(res);
+    }
+    printf("Super digit:%d\n",res);
+}
