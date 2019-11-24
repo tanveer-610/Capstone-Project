@@ -1,0 +1,13 @@
+#include<stdio.h>
+int RecFibo(int n)
+{
+   return  (n==1 || n==0)?n:RecFibo(n-1)+RecFibo(n-2);
+}
+
+int main()
+{
+    int n;
+    printf("Enter the position for required fibonacci:");
+    scanf("%d",&n);
+    printf("\tFibonacci of f(%d) th position : %d\n",n,RecFibo(n));
+}
