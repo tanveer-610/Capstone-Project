@@ -1,0 +1,68 @@
+#include<stdio.h>
+struct info
+{
+    char name[40];
+    float age;
+    int no_test_match;
+    double avg;
+};
+int highestMatch(int array1[]);
+void topScorer(struct info player[]);
+main()
+{
+    struct info player[20];
+    int array1[20];
+
+    for(int i=0;i<20;i++)
+    {
+      printf("\tEnter player no %d info:\n",i+1);
+      scanf("%[^\n]",&player[i].name);
+      scanf("%f%d%lf",&player[i].age,&player[i].no_test_match,&player[i].avg);
+      array1[i]=player[i].no_test_match;
+
+      getchar();
+    }
+    int max=highestMatch(array1);
+    for(int i=0;i<20;i++)
+    {
+        if(max==player[i].no_test_match)
+            printf("Players name = %s\n",player[i].name);
+    }
+    topScorer(player);
+}
+
+
+int highestMatch(int array1[])
+{
+    int max=array1[0];
+   for(int i=0;i<20;i++)
+   {
+       if(max<array1[i])
+       {
+           max=array1[i];
+       }
+   }
+   return max;
+}
+void topScorer(struct info player[20])
+ {
+     struct info swap;
+   for(int i=0;i<20-1;i++)
+   {
+       for(int j=0;j<20-1-i;j++)
+       {
+           if(player[i+1].avg<player[i].avg)
+           {
+            swap=player[j];
+             player[j]=player[j+1];
+             player[j+1]=swap;
+           }
+       }
+   }
+   printf("\n\nName\tAge\tMatch No\tAverage\n");
+    for (int i = 0; i < 20; i++)
+    {
+        printf("%s\t%.2f\t%d\t\t%.2lf\n",player[i].name,player[i].age,player[i].no_test_match,player[i].avg);
+    }
+ }
+
