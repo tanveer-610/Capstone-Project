@@ -1,0 +1,436 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+#include<conio.h>
+#include<windows.h>
+void tribute();
+void menu();
+void kick();
+void load();
+void gotoxy(int x,int y);
+void boxplot();
+void  grouped_mean(double midpoint[],int n);
+void ungrouped_skewness(double data[],int n);
+double ungrouped_standard_deviation(double data[],int n);
+void  ungrouped_mode(double data[],int n);
+void ungrouped_range(double data[],int n);
+double ungrouped_median(double data[],int n);
+int ungrouped_mean(double data[],int n);
+FILE *ptr;
+int ungrouped_mean(double data[],int n)
+{
+    double sum=0;
+    int i;
+    ///Arithmetic mean
+    for(i=0; i<n; i++)
+    {
+        sum=sum+data[i];
+    }
+    double arithmetic_mean=sum/n;
+    printf("\t\tArithmetic mean =%.3lf\n",arithmetic_mean);
+    sum=1;
+    for(i=0; i<n; i++)
+    {
+        sum=sum*data[i];
+    }
+    ///Geometric mean
+    double p=1.0/n;
+    double geo_mean=pow(sum,p);
+    printf("\t\tGeometric mean =%.3lf\n",geo_mean);
+    sum=0;
+    for(i=0; i<n; i++)
+    {
+        sum=sum+1/data[i];
+    }
+    ///Harmonic mean
+    double har_mean=n/sum;
+    printf("\t\tHarmonic mean =%.3lf\n",har_mean);
+
+    ptr = fopen("Previous Record File.txt","a");
+    fprintf(ptr,"Arithmetic mean:%.3f Geometric mean:%.3lf Harmonic mean:%.3lf\n",arithmetic_mean,geo_mean,har_mean);
+    fclose(ptr);
+    return 0;
+}
+double ungrouped_median(double data[],int n)
+{
+    for(int i=0; i<n-1; i++)
+    {
+        for(int j=0; j<n-i-1; j++)
+        {
+            if(data[j+1]<data[j])
+            {
+                double swap=data[j];
+                data[j]=data[j+1];
+                data[j+1]=swap;
+            }
+        }
+    }
+    if(n%2!=0)
+    {
+        int ele=(n+1)/2;
+        printf("\t\tMedian is=%.3lf\n",data[ele-1]);
+        return data[ele-1];
+    }
+    else
+    {
+        int c=n/2.0;
+        int d=c+1;
+        double med=(data[c-1]+data[d-1])/2.0;
+        printf("\t\tMedian is=%.3lf\n",med);
+
+        ptr = fopen("Previous Record File.txt","a");
+        fprintf(ptr,"Median: %.3lf\n",med);
+        fclose(ptr);
+        return med;
+    }
+}
+void ungrouped_range(double data[],int n)
+{
+    double max=data[0];
+    double min=data[0];
+    int i;
+    for(i=0; i<n; i++)
+    {
+        if(data[i]>max)
+            max=data[i];
+        if(data[i]<min)
+            min=data[i];
+    }
+    double range=max-min;
+    printf("\t\tRange=%.3lf\n",range);
+    ptr = fopen("Previous Record File.txt","a");
+    fprintf(ptr,"Range: %.3lf\n",range);
+    fclose(ptr);
+}
+void  ungrouped_mode(double data[],int n)
+{
+    int i,j,count[100];
+    for(i=0; i<n; i++)
+        count[i]=1;
+    for(i=0; i<n; i++)
+    {
+        for(j=i+1; j<n; j++)
+            if(data[i]==data[j])
+                count[i]++;
+    }
+    int max=count[0];
+    double dataa;
+    for(i=1; i<n; i++)
+    {
+        if(max<count[i])
+        {
+            max=count[i];
+            dataa=data[i];
+        }
+
+    }
+    printf("\t\tMode =%.3f repeats %d times\n",dataa,max);
+    ptr = fopen("Previous Record File.txt","a");
+    fprintf(ptr,"Mode:%.3lf repeating %d times\n",dataa,max);
+    fclose(ptr);
+}
+double ungrouped_standard_deviation(double data[],int n)
+{
+    double sum=0;
+    int i;
+    ///Arithmetic mean
+    for(i=0; i<n; i++)
+    {
+        sum=sum+data[i];
+    }
+    double arithmetic_mean=sum/n;
+    double pp=0;
+    for(i=0; i<n; i++)
+    {
+        pp=pp+((data[i]-arithmetic_mean)*(data[i]-arithmetic_mean));
+    }
+    double population=sqrt(pp/n);
+    double sample=sqrt(pp/n-1);
+    printf("\t\tStandard deviation population = %.3lf\n",population);
+    printf("\t\tStandard deviation sample = %.3lf\n",sample);
+    ptr = fopen("Previous Record File.txt","a");
+    fprintf(ptr,"Population :%.3lf Sample:%.3lf\n",population,sample);
+    fclose(ptr);
+    return sample;
+}
+void ungrouped_skewness(double data[],int n)
+{
+    double sum=0;
+    int i;
+    ///Arithmetic mean
+    for(i=0; i<n; i++)
+    {
+        sum=sum+data[i];
+    }
+    double arithmetic_mean=sum/n;
+    double median=ungrouped_median(data,n);
+    double std_devi= ungrouped_standard_deviation(data,n);
+    double skew=(3*(arithmetic_mean-median))/std_devi;
+    printf("\t\t\nSkewness=%.3lf\n",skew);
+    ptr = fopen("Previous Record File.txt","a");
+    fprintf(ptr,"Skewness:%.3lf\n",skew);
+    fclose(ptr);
+}
+void  grouped_mean(double midpoint[],int n)
+{
+    double freq[1000],sum=0;
+    printf("Enter frequency:");
+    for(int i=0; i<n; i++)
+    {
+        scanf("%lf",&freq[i]);
+    }
+    for(int i=0; i<n; i++)
+    {
+        sum=sum+freq[i]*midpoint[i];
+    }
+    printf("\t\tG. Arithmetic mean=%.4lf\n",sum/n);
+    sum=0;
+    for(int i=0; i<n; i++)
+    {
+        sum=sum*pow(midpoint[i],freq[i]);
+    }
+    printf("\t\tG. Geometric mean=%.4lf\n",pow(sum,1.0/n));
+    sum=0;
+    for(int i=0; i<n; i++)
+    {
+        sum=sum+(freq[i]/midpoint[i]);
+    }
+    printf("\t\tG. Harmonic mean=%.4lf\n",n/sum);
+    ptr = fopen("Previous Record File.txt","a");
+    fprintf(ptr,"G,Arith:%.4lf G.Geo:%.4lf G.Har:%.4lf\n",sum/n,pow(sum,1.0/n),n/sum);
+    fclose(ptr);
+}
+void boxplot()
+{
+    double q1,q3,iqr,mini,max;
+
+    int n;
+    printf("Enter how many elements in your set: ");
+    scanf("%d",&n);
+    double a[n];
+    printf("\nEnter elements:");
+    for(int i=0; i<n; i++)
+        scanf("%lf",&a[i]);
+    for(int i=0; i<n-1; i++)
+    {
+        for(int j=0; j<n-i-1; j++)
+        {
+            if(a[j]>a[j+1])
+            {
+                double swap=a[j];
+                a[j]=a[j+1];
+                a[j+1]=swap;
+            }
+        }
+    }
+
+    q1=(n/4.0);
+
+    int intpart = (int)q1;
+    float decpart = q1 - intpart;
+
+    q1 =  (a[intpart-1]) + (decpart*(a[intpart] - a[intpart-1]));
+
+    q3 = (3*n)/4.0;
+    intpart = (int)q3;
+    decpart = q3 - intpart;
+
+    q3 =  (a[intpart-1]) + (decpart*(a[intpart] - a[intpart-1]));
+
+    iqr = q3 - q1;
+
+    mini = q1 - (1.5*iqr);
+    max = q3 + (1.5*iqr);
+    printf("\t\tQ1:%.3lf  Q3:%.3lf\n\t\tMinimum threshold:%.3lf   Maximum threshold:%.3lf\n",q1,q3,mini,max);
+    printf("out line:");
+    for(int i=0; i<n; i++)
+    {
+        if(a[i]<=mini)
+        {
+            printf("%.2lf ",a[i]);
+        }
+        else if(a[i]>=max)
+        {
+            printf("%.3lf ",a[i]);
+        }
+    }
+    ptr = fopen("Previous Record File.txt","a");
+    fprintf(ptr,"Q1:%.3lf Q3:%.3lf\n Minimum threshold:%.3lf\n Miximum threshold:%.3lf\n",q1,q3,mini,max);
+    fclose(ptr);
+}
+void gotoxy(int x,int y)
+{
+
+    COORD coord;
+
+    coord.X = x;
+
+    coord.Y = y;
+
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+
+}
+void load()
+{
+    int row,col,r,c,q;
+    gotoxy(36,14);
+    printf("\tloading...");
+    gotoxy(30,15);
+    for(r=1; r<=20; r++)
+    {
+        for(q=0; q<=100000000; q++);
+        printf("%c",177);
+    }
+}
+void kick()
+{
+    int row,col,r,c,q;
+    gotoxy(36,14);
+    printf("\tkick you!");
+    gotoxy(30,15);
+    for(r=1; r<=20; r++)
+    {
+        for(q=0; q<=10000000; q++);
+        printf("-");
+    }
+    printf("-----");
+    getch();
+}
+void menu()
+{
+    printf("\n\n\n\t\t\t\t*****WELCOME TO STATISTICS AREANA*****\n\n\t\t\t\t\n\n\n\n");
+    load();
+    system("cls");
+    printf("\n\n\n\n\t\t\t\tINSTRUCTIONS\n\n\t\t(1)Enter choice as Number\n\n\t\t(2) -__-Be careful MKH is coming-__- ");
+    printf("\n\n\t\t(3)Keep Distance !!Danger Zone!!");
+    printf("\n\n\t\t\t Enter any key for Continue.");
+    getch();
+    system("cls");
+}
+void tribute()
+{
+    printf("\n\n\n\t\t\t\t*****Sir Online Quiz Please*****\n\n\t\t\t\t\n\n\n\n");
+    printf("\t\t\tYes,Request Accepted... ");
+    printf("\n\n\t\t Enter Y key for Continue.");
+
+    getch();
+    system("cls");
+    load();
+    system("cls");
+    printf("\t\t\tWe also wanted to play with you\n\n");
+    printf("\t\t\tOk Come on Dear....");
+    getche();
+}
+int main()
+{
+    int choice,n;
+    menu();
+    double data[1000],lolimit[1000],uplimit[1000],midpoint[1000];;
+    char ch;
+    tribute();
+    do
+    {
+        system("cls");
+        printf("\t\t1.Ungrouped data mean\n");
+        printf("\t\t\t->Arithmetic Mean\n");
+        printf("\t\t\t->Geometric Mean\n");
+        printf("\t\t\t->Harmonic Mean\n");
+        printf("\t\t2.Ungrouped data median\n");
+        printf("\t\t3.Ungrouped data range\n");
+        printf("\t\t4.Ungrouped data mode\n");
+        printf("\t\t5.Ungrouped standard_deviation\n");
+        printf("\t\t\t->Sample\n");
+        printf("\t\t\t->Population\n");
+        printf("\t\t6.Ungrouped skewness\n");
+        printf("\t\t\t->Median \n");
+        printf("\t\t\t->Sample\n");
+        printf("\t\t\t->Population\n");
+        printf("\t\t7.Grouped data mean\n");
+        printf("\t\t\t->G.Arithmetic Mean\n");
+        printf("\t\t\t->G.Geometric Mean\n");
+        printf("\t\t\t->G.Harmonic Mean\n");
+        printf("\t\t8.[BOXPLOT]\n");
+        printf("\nEnter your choice:");
+        scanf("%d",&choice);
+        switch(choice)
+        {
+        case 1:
+            printf("Enter your data no:\n");
+            scanf("%d",&n);
+            printf("Enter your data:\n");
+            for(int i=0; i<n; i++)
+                scanf("%lf",&data[i]);
+            ungrouped_mean(data,n);
+            break;
+        case 2:
+            printf("Enter your data no:\n");
+            scanf("%d",&n);
+            printf("Enter your data:\n");
+            for(int i=0; i<n; i++)
+                scanf("%lf",&data[i]);
+            ungrouped_median(data,n);
+            break;
+        case 3:
+            printf("Enter your data no:\n");
+            scanf("%d",&n);
+            printf("Enter your data:\n");
+            for(int i=0; i<n; i++)
+                scanf("%lf",&data[i]);
+            ungrouped_range(data,n);
+            break;
+        case 4:
+            printf("Enter your data no:\n");
+            scanf("%d",&n);
+            printf("Enter your data:\n");
+            for(int i=0; i<n; i++)
+                scanf("%lf",&data[i]);
+            ungrouped_mode(data,n);
+            break;
+
+        case 5:
+            printf("Enter your data no:\n");
+            scanf("%d",&n);
+            printf("Enter your data:\n");
+            for(int i=0; i<n; i++)
+                scanf("%lf",&data[i]);
+            ungrouped_standard_deviation(data,n);
+            break;
+        case 6:
+            printf("Enter your data no:\n");
+            scanf("%d",&n);
+            printf("Enter your data:\n");
+            for(int i=0; i<n; i++)
+                scanf("%lf",&data[i]);
+            ungrouped_skewness(data,n);
+            break;
+        case 7:
+            printf("Enter your data no:\n");
+            scanf("%d",&n);
+            printf("Enter your lower & upper limit:\n");
+            for(int i=0; i<n; i++)
+            {
+                scanf("%lf %lf",&lolimit[i],&uplimit[i]);
+                midpoint[i]=(lolimit[i]+uplimit[i])/2;
+            }
+            grouped_mean(midpoint,n);
+            break;
+        case 8:
+            boxplot();
+            break;
+        }
+        printf("\n::::Do you want to run again?(y/n)::::");
+        ch = getche();
+        system("cls");
+
+    }while(ch=='y' || ch=='Y');
+
+    if(ch != 'y' || ch!='Y' )
+    {
+        printf("\n\n\n\t\t\t\t*****Mission Succeeded*****\n\n\t\t\t\t\n\n\n\n");
+        printf("\n\n\n\t\t\t\t*****SEE YOU LATER DEAR SIR****\n\n\t\t\t\t\n\n\n\n");
+        kick();
+
+    }
+}
+
+
